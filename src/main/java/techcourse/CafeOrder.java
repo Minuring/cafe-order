@@ -1,47 +1,73 @@
 package techcourse;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class CafeOrder {
+
+    private static final Map<String, Menu> menuNames = Map.of(
+        "아메리카노", new Menu(Category.DRINK, "아메리카노", 1500),
+        "라떼", new Menu(Category.DRINK, "라떼", 2000),
+        "모카", new Menu(Category.DRINK, "모카", 2500),
+        "크로와상", new Menu(Category.DRINK, "크로와상", 3000)
+    );
+
     public static int calculateTotalPrice(String[] items, int[] quantities) {
-        int total = 0;
-        for (int i = 0; i < items.length; i++) {
-            int price = 0;
-            if (items[i].equals("아메리카노")) {
-                price = 1200;
-            } else if (items[i].equals("라떼")) {
-                price = 2000;
-            } else if (items[i].equals("모카")) {
-                price = 2500;
-            } else if (items[i].equals("크로와상")) {
-                price = 3000;
-            }
-            total += price * quantities[i];
+        if (!isAllMenusExisting(items)) {
+            throw new IllegalArgumentException("item not exists");
         }
 
-        int drinkCount = 0;
-        for (int i = 0; i < items.length; i++) {
-            if (!items[i].equals("크로와상")) {
-                drinkCount += quantities[i];
-            }
+        final var menus = orderMenus(items, quantities);
+
+        var total = calculateCostSum(menus);
+        var drinkDiscount = calculateDrinkDiscount(menus);
+
+        return total - drinkDiscount;
+    }
+
+    private static List<OrderMenu> orderMenus(final String[] items, final int[] quantities) {
+        return Stream.iterate(0, i -> i + 1)
+            .limit(items.length)
+            .map(i -> new OrderMenu(menuNames.get(items[i]), quantities[i]))
+            .toList();
+    }
+
+    private static boolean isAllMenusExisting(final String[] items) {
+        return Arrays.stream(items).allMatch(menuNames::containsKey);
+    }
+
+    private static int calculateCostSum(final Collection<OrderMenu> orderMenus) {
+        return orderMenus.stream()
+            .mapToInt(OrderMenu::cost)
+            .sum();
+    }
+
+    private static int calculateDrinkDiscount(final Collection<OrderMenu> orderMenus) {
+        final var drinkOrderMenus = orderMenus.stream()
+            .filter(om -> om.isCategoryOf(Category.DRINK))
+            .collect(Collectors.toSet());
+
+        final var americanoDiscount = drinkOrderMenus.stream()
+            .filter(om -> om.menu().name().equals("아메리카노"))
+            .mapToInt(om -> om.quantity() * 300)
+            .sum();
+
+        int totalQuantity = drinkOrderMenus.stream()
+            .mapToInt(OrderMenu::quantity)
+            .sum();
+
+        if (totalQuantity < 5) {
+            return americanoDiscount;
         }
 
-        if (drinkCount >= 5) {
-            int drinkTotal = 0;
-            for (int i = 0; i < items.length; i++) {
-                if (!items[i].equals("크로와상")) {
-                    int drinkPrice = 0;
-                    if (items[i].equals("아메리카노")) {
-                        drinkPrice = 1200;
-                    } else if (items[i].equals("라떼")) {
-                        drinkPrice = 2000;
-                    } else if (items[i].equals("모카")) {
-                        drinkPrice = 2500;
-                    }
-                    drinkTotal += drinkPrice * quantities[i];
-                }
-            }
-            total -= drinkTotal / 10;
-        }
+        var totalCost = drinkOrderMenus.stream()
+            .mapToInt(OrderMenu::cost)
+            .sum();
 
-        return total;
+        return totalCost / 10 + americanoDiscount;
     }
 }
