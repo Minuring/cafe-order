@@ -17,7 +17,7 @@ public class FiveDrinksPromotion implements Promotion {
 
         final var totalCost = orderMenus.stream()
             .filter(om -> om.isCategoryOf(Category.DRINK))
-            .mapToInt(OrderMenu::cost)
+            .mapToInt(OrderMenu::totalPrice)
             .sum();
         return totalCost / DISCOUNT_PERCENT;
     }

@@ -11,9 +11,13 @@ import techcourse.promotion.FixedMenuPromotion;
 public class Application {
 
     public static void main(String[] args) {
-        final var cafe = cafe();
+        final var view = new View();
+        final var request = view.readOrderRequest();
 
-//        final var orderMenus = cafe.order();
+        final var cafe = cafe();
+        final var order = cafe.order(request.menuNames(), request.quantities());
+
+        view.printOrder(order);
     }
 
     private static Cafe cafe() {
@@ -21,7 +25,7 @@ public class Application {
             "아메리카노", new Menu(Category.DRINK, "아메리카노", 1500),
             "라떼", new Menu(Category.DRINK, "라떼", 2000),
             "모카", new Menu(Category.DRINK, "모카", 2500),
-            "크로와상", new Menu(Category.DRINK, "크로와상", 3000)
+            "크로와상", new Menu(Category.BREAD, "크로와상", 3000)
         );
 
         final var promotions = Set.of(

@@ -11,7 +11,7 @@ public record OrderMenu(
         return menu.isCategoryOf(category);
     }
 
-    public int cost() {
+    public int totalPrice() {
         return menu.price() * quantity;
     }
 }

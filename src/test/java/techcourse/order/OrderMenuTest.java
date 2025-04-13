@@ -14,7 +14,7 @@ class OrderMenuTest {
 
         final var orderMenu = new OrderMenu(menu, 3);
 
-        assertThat(orderMenu.cost()).isEqualTo(3000);
+        assertThat(orderMenu.totalPrice()).isEqualTo(3000);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package techcourse.order;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,13 +9,13 @@ public record Order(
 ) {
 
     public int totalCost() {
-        final var totalCost = sumCosts(menus);
+        final var totalCost = totalPrice();
         return totalCost - discount;
     }
 
-    private int sumCosts(final Collection<OrderMenu> orderMenus) {
-        return orderMenus.stream()
-            .mapToInt(OrderMenu::cost)
+    public int totalPrice() {
+        return menus.stream()
+            .mapToInt(OrderMenu::totalPrice)
             .sum();
     }
 
