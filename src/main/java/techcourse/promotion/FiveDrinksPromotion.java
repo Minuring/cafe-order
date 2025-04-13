@@ -1,8 +1,8 @@
 package techcourse.promotion;
 
 import java.util.Collection;
-import techcourse.Category;
-import techcourse.OrderMenu;
+import techcourse.menu.Category;
+import techcourse.order.OrderMenu;
 
 public class FiveDrinksPromotion implements Promotion {
 
@@ -16,6 +16,7 @@ public class FiveDrinksPromotion implements Promotion {
         }
 
         final var totalCost = orderMenus.stream()
+            .filter(om -> om.isCategoryOf(Category.DRINK))
             .mapToInt(OrderMenu::cost)
             .sum();
         return totalCost / DISCOUNT_PERCENT;

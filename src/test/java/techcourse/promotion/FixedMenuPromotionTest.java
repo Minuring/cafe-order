@@ -2,12 +2,11 @@ package techcourse.promotion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import techcourse.Category;
-import techcourse.Menu;
-import techcourse.OrderMenu;
+import techcourse.menu.Category;
+import techcourse.menu.Menu;
+import techcourse.order.OrderMenu;
 
 class FixedMenuPromotionTest {
 

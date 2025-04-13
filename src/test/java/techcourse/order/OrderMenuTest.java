@@ -1,9 +1,10 @@
-package techcourse;
+package techcourse.order;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import techcourse.menu.Category;
+import techcourse.menu.Menu;
 
 class OrderMenuTest {
 

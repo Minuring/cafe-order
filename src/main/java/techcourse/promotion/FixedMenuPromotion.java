@@ -1,8 +1,8 @@
 package techcourse.promotion;
 
 import java.util.Collection;
-import techcourse.Menu;
-import techcourse.OrderMenu;
+import techcourse.menu.Menu;
+import techcourse.order.OrderMenu;
 
 public class FixedMenuPromotion implements Promotion {
 

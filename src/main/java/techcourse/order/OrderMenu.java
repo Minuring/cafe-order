@@ -1,4 +1,7 @@
-package techcourse;
+package techcourse.order;
+
+import techcourse.menu.Category;
+import techcourse.menu.Menu;
 
 public record OrderMenu(
     Menu menu,

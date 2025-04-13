@@ -1,7 +1,7 @@
 package techcourse.promotion;
 
 import java.util.Collection;
-import techcourse.OrderMenu;
+import techcourse.order.OrderMenu;
 
 public interface Promotion {
 

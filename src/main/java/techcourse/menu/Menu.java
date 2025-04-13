@@ -1,4 +1,4 @@
-package techcourse;
+package techcourse.menu;
 
 public record Menu(
     Category category,
