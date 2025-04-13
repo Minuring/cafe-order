@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.stream.Stream;
+import techcourse.promotion.FixedMenuPromotion;
+import techcourse.promotion.FiveDrinksPromotion;
+import techcourse.promotion.Promotion;
 
 public class CafeOrder {
 
@@ -16,6 +19,11 @@ public class CafeOrder {
         "크로와상", new Menu(Category.DRINK, "크로와상", 3000)
     );
 
+    private static final Set<Promotion> promotions = Set.of(
+        new FiveDrinksPromotion(),
+        new FixedMenuPromotion(menuNames.get("아메리카노"), 300)
+    );
+
     public static int calculateTotalPrice(String[] items, int[] quantities) {
         if (!isAllMenusExisting(items)) {
             throw new IllegalArgumentException("item not exists");
@@ -23,10 +31,13 @@ public class CafeOrder {
 
         final var menus = orderMenus(items, quantities);
 
-        var total = calculateCostSum(menus);
-        var drinkDiscount = calculateDrinkDiscount(menus);
+        final var totalCost = sumCosts(menus);
+        final var discountAmount = applyPromotionDiscounts(menus);
+        return totalCost - discountAmount;
+    }
 
-        return total - drinkDiscount;
+    private static boolean isAllMenusExisting(final String[] items) {
+        return Arrays.stream(items).allMatch(menuNames::containsKey);
     }
 
     private static List<OrderMenu> orderMenus(final String[] items, final int[] quantities) {
@@ -36,38 +47,15 @@ public class CafeOrder {
             .toList();
     }
 
-    private static boolean isAllMenusExisting(final String[] items) {
-        return Arrays.stream(items).allMatch(menuNames::containsKey);
-    }
-
-    private static int calculateCostSum(final Collection<OrderMenu> orderMenus) {
+    private static int sumCosts(final Collection<OrderMenu> orderMenus) {
         return orderMenus.stream()
             .mapToInt(OrderMenu::cost)
             .sum();
     }
 
-    private static int calculateDrinkDiscount(final Collection<OrderMenu> orderMenus) {
-        final var drinkOrderMenus = orderMenus.stream()
-            .filter(om -> om.isCategoryOf(Category.DRINK))
-            .collect(Collectors.toSet());
-
-        final var americanoDiscount = drinkOrderMenus.stream()
-            .filter(om -> om.menu().name().equals("아메리카노"))
-            .mapToInt(om -> om.quantity() * 300)
+    private static int applyPromotionDiscounts(final Collection<OrderMenu> orderMenus) {
+        return promotions.stream()
+            .mapToInt(p -> p.discount(orderMenus))
             .sum();
-
-        int totalQuantity = drinkOrderMenus.stream()
-            .mapToInt(OrderMenu::quantity)
-            .sum();
-
-        if (totalQuantity < 5) {
-            return americanoDiscount;
-        }
-
-        var totalCost = drinkOrderMenus.stream()
-            .mapToInt(OrderMenu::cost)
-            .sum();
-
-        return totalCost / 10 + americanoDiscount;
     }
 }

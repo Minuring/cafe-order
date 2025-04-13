@@ -5,7 +5,7 @@ public record Menu(
     String name,
     int price
 ) {
-    boolean isCategoryOf(Category category) {
+    public boolean isCategoryOf(Category category) {
         return category == this.category;
     }
 }

@@ -4,11 +4,11 @@ public record OrderMenu(
     Menu menu,
     int quantity
 ) {
-    boolean isCategoryOf(Category category) {
+    public boolean isCategoryOf(Category category) {
         return menu.isCategoryOf(category);
     }
 
-    int cost() {
+    public int cost() {
         return menu.price() * quantity;
     }
 }
